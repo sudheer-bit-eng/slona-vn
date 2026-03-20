@@ -57,66 +57,96 @@ def alma(series: pd.Series, length: int = 2,
     return result
 
 
-# ─────────────────────────── Binance helpers ──────────────
-# Multiple base URLs tried in order — fixes SSL/region blocks
-BINANCE_BASES = [
-    "https://api.binance.com",
-    "https://api1.binance.com",
-    "https://api2.binance.com",
-    "https://api3.binance.com",
-]
-
-# SSL context that tolerates broken TLS handshakes (Python 3.14 + Windows)
+# ─────────────────────────── Data sources ──────────────────
+# Tries multiple sources in order — fixes 451 region blocks on Railway
 import ssl, urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-_SSL_CTX = ssl.create_default_context()
-_SSL_CTX.check_hostname = False
-_SSL_CTX.verify_mode    = ssl.CERT_NONE
 
 def _get(url: str, params: dict = None, timeout: int = 10) -> requests.Response:
-    """
-    GET with automatic fallback across Binance base URLs and
-    SSL verification disabled to fix SSLEOFError on Windows/India.
-    """
-    last_err = None
-    for base in BINANCE_BASES:
-        full_url = url.replace("https://api.binance.com", base)
-        try:
-            resp = requests.get(full_url, params=params,
-                                timeout=timeout, verify=False)
-            resp.raise_for_status()
-            return resp
-        except Exception as e:
-            last_err = e
-            logger.debug("URL %s failed: %s", full_url, e)
-            continue
-    raise last_err
+    """GET with SSL verification disabled."""
+    resp = requests.get(url, params=params, timeout=timeout, verify=False)
+    resp.raise_for_status()
+    return resp
 
 
 def fetch_klines(symbol: str, interval: str,
                  limit: int = 100) -> pd.DataFrame:
-    """Pull the last `limit` closed candles from Binance REST."""
-    url    = "https://api.binance.com/api/v3/klines"
-    params = dict(symbol=symbol, interval=interval, limit=limit)
-    resp   = _get(url, params=params)
-    raw = resp.json()
-    df  = pd.DataFrame(raw, columns=[
-        "open_time","open","high","low","close","volume",
-        "close_time","qav","trades","tbbav","tbqav","ignore"
-    ])
-    for col in ["open","high","low","close"]:
-        df[col] = df[col].astype(float)
-    df["open_time"]  = pd.to_datetime(df["open_time"],  unit="ms")
-    df["close_time"] = pd.to_datetime(df["close_time"], unit="ms")
-    # drop the live (unconfirmed) candle – only trade on closed bars
-    return df.iloc[:-1].reset_index(drop=True)
+    """
+    Fetch OHLCV candles — tries multiple sources in order:
+    1. Binance.com
+    2. Binance US
+    3. KuCoin (mapped symbol)
+    """
+    # ── Source 1: Binance.com ──────────────────────────────
+    binance_urls = [
+        "https://api.binance.com/api/v3/klines",
+        "https://api1.binance.com/api/v3/klines",
+        "https://api2.binance.com/api/v3/klines",
+    ]
+    for url in binance_urls:
+        try:
+            resp = _get(url, params=dict(symbol=symbol, interval=interval, limit=limit))
+            raw  = resp.json()
+            df   = pd.DataFrame(raw, columns=[
+                "open_time","open","high","low","close","volume",
+                "close_time","qav","trades","tbbav","tbqav","ignore"
+            ])
+            for col in ["open","high","low","close"]:
+                df[col] = df[col].astype(float)
+            df["open_time"]  = pd.to_datetime(df["open_time"],  unit="ms")
+            df["close_time"] = pd.to_datetime(df["close_time"], unit="ms")
+            logger.debug("Klines from %s", url)
+            return df.iloc[:-1].reset_index(drop=True)
+        except Exception as e:
+            logger.debug("Binance klines failed %s: %s", url, e)
+
+    # ── Source 2: KuCoin ──────────────────────────────────
+    try:
+        # convert interval: 5m→5min, 1h→1hour
+        kc_interval = interval.replace("m", "min").replace("h", "hour").replace("d", "day")
+        kc_symbol   = symbol.replace("USDT", "-USDT")   # SOLUSDT → SOL-USDT
+        url  = "https://api.kucoin.com/api/v1/market/candles"
+        resp = _get(url, params=dict(symbol=kc_symbol, type=kc_interval))
+        raw  = resp.json().get("data", [])
+        # KuCoin returns newest first — reverse it
+        raw  = list(reversed(raw))
+        df   = pd.DataFrame(raw, columns=["open_time","open","close","high","low","volume","turnover"])
+        for col in ["open","high","low","close"]:
+            df[col] = df[col].astype(float)
+        df["open_time"]  = pd.to_datetime(df["open_time"].astype(int), unit="s")
+        df["close_time"] = df["open_time"]
+        df = df.tail(limit)
+        logger.debug("Klines from KuCoin")
+        return df.iloc[:-1].reset_index(drop=True)
+    except Exception as e:
+        logger.debug("KuCoin klines failed: %s", e)
+
+    raise RuntimeError("All kline sources failed — check internet/region block")
 
 
 def fetch_price(symbol: str) -> float:
-    """Current mid price from Binance ticker."""
-    url  = "https://api.binance.com/api/v3/ticker/price"
-    resp = _get(url, params={"symbol": symbol}, timeout=5)
-    return float(resp.json()["price"])
+    """
+    Fetch current price — tries Binance then KuCoin.
+    """
+    # ── Binance ───────────────────────────────────────────
+    for url in ["https://api.binance.com/api/v3/ticker/price",
+                "https://api1.binance.com/api/v3/ticker/price"]:
+        try:
+            resp = _get(url, params={"symbol": symbol}, timeout=5)
+            return float(resp.json()["price"])
+        except Exception as e:
+            logger.debug("Binance price failed %s: %s", url, e)
+
+    # ── KuCoin ────────────────────────────────────────────
+    try:
+        kc_symbol = symbol.replace("USDT", "-USDT")
+        url  = f"https://api.kucoin.com/api/v1/market/orderbook/level1?symbol={kc_symbol}"
+        resp = _get(url, timeout=5)
+        return float(resp.json()["data"]["price"])
+    except Exception as e:
+        logger.debug("KuCoin price failed: %s", e)
+
+    raise RuntimeError("All price sources failed")
 
 
 # ─────────────────────────── Signal engine ────────────────

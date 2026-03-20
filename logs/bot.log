@@ -3500,3 +3500,161 @@
 2026-03-20 01:23:37 | DEBUG   | tick price=88.8900  pos=SHORT entry=88.8400  bal=$1000.00
 2026-03-20 01:23:47 | DEBUG   | tick price=88.8900  pos=SHORT entry=88.8400  bal=$1000.00
 2026-03-20 01:23:58 | DEBUG   | tick price=88.8600  pos=SHORT entry=88.8400  bal=$1000.00
+2026-03-20 19:03:02 | WARNING | [93mGoogle Sheets not configured — set spreadsheet_id in config.py  (trades will still be saved to CSV)[0m
+2026-03-20 19:03:02 | INFO    | [97m✅ Telegram connected — alerts will be sent to your phone[0m
+2026-03-20 19:03:02 | INFO    | [97mBot initialised — balance: $1000.00[0m
+2026-03-20 19:03:02 | INFO    | [97m═══ Bot started  symbol=SOLUSDT  tf=5m ═══[0m
+2026-03-20 19:03:04 | INFO    | [97m[91mENTRY_SHORT       [0m  price=88.9800     qty=$1000.00   bal=$1000.00     [0m
+2026-03-20 19:03:04 | INFO    | [97m▶ Opened SHORT @ 88.9800  size=$1000.00[0m
+2026-03-20 19:03:04 | DEBUG   | tick price=88.9800  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:03:15 | DEBUG   | tick price=88.9400  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:03:25 | DEBUG   | tick price=88.9600  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:03:36 | DEBUG   | tick price=89.0200  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:03:46 | DEBUG   | tick price=88.9400  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:03:57 | DEBUG   | tick price=88.8700  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:04:08 | DEBUG   | tick price=88.9800  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:04:18 | DEBUG   | tick price=89.0000  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:04:29 | DEBUG   | tick price=88.9600  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:04:39 | DEBUG   | tick price=88.9500  pos=SHORT entry=88.9800  bal=$1000.00
+2026-03-20 19:04:39 | INFO    | [97mBot stopped by user. Total P&L: $0.0000[0m
+2026-03-20 19:06:03 | WARNING | [93mGoogle Sheets not configured — set spreadsheet_id in config.py  (trades will still be saved to CSV)[0m
+2026-03-20 19:06:03 | INFO    | [97m✅ Telegram connected — alerts will be sent to your phone[0m
+2026-03-20 19:06:03 | INFO    | [97mBot initialised — balance: $1000.00[0m
+2026-03-20 19:06:03 | INFO    | [97m═══ Bot started  symbol=SOLUSDT  tf=5m ═══[0m
+2026-03-20 19:06:04 | DEBUG   | tick price=88.8500  pos=flat  bal=$1000.00
+2026-03-20 19:06:14 | DEBUG   | tick price=88.8500  pos=flat  bal=$1000.00
+2026-03-20 19:06:25 | DEBUG   | tick price=88.8900  pos=flat  bal=$1000.00
+2026-03-20 19:06:35 | DEBUG   | tick price=88.9000  pos=flat  bal=$1000.00
+2026-03-20 19:06:45 | DEBUG   | tick price=88.8400  pos=flat  bal=$1000.00
+2026-03-20 19:06:56 | DEBUG   | tick price=88.8600  pos=flat  bal=$1000.00
+2026-03-20 19:07:07 | DEBUG   | tick price=88.9000  pos=flat  bal=$1000.00
+2026-03-20 19:07:17 | DEBUG   | tick price=88.9100  pos=flat  bal=$1000.00
+2026-03-20 19:07:27 | DEBUG   | tick price=89.0000  pos=flat  bal=$1000.00
+2026-03-20 19:07:38 | DEBUG   | tick price=89.1000  pos=flat  bal=$1000.00
+2026-03-20 19:07:48 | DEBUG   | tick price=89.0200  pos=flat  bal=$1000.00
+2026-03-20 19:07:59 | DEBUG   | tick price=88.9900  pos=flat  bal=$1000.00
+2026-03-20 19:08:09 | DEBUG   | tick price=88.9800  pos=flat  bal=$1000.00
+2026-03-20 19:08:19 | DEBUG   | tick price=88.9200  pos=flat  bal=$1000.00
+2026-03-20 19:08:30 | DEBUG   | tick price=88.8400  pos=flat  bal=$1000.00
+2026-03-20 19:08:40 | DEBUG   | tick price=88.7600  pos=flat  bal=$1000.00
+2026-03-20 19:08:51 | DEBUG   | tick price=88.8300  pos=flat  bal=$1000.00
+2026-03-20 19:09:01 | DEBUG   | tick price=88.8200  pos=flat  bal=$1000.00
+2026-03-20 19:09:11 | DEBUG   | tick price=88.7900  pos=flat  bal=$1000.00
+2026-03-20 19:09:22 | DEBUG   | tick price=88.8000  pos=flat  bal=$1000.00
+2026-03-20 19:09:32 | DEBUG   | tick price=88.8300  pos=flat  bal=$1000.00
+2026-03-20 19:09:43 | DEBUG   | tick price=88.8300  pos=flat  bal=$1000.00
+2026-03-20 19:09:53 | DEBUG   | tick price=88.7400  pos=flat  bal=$1000.00
+2026-03-20 19:10:01 | INFO    | [97mBot stopped by user. Total P&L: $0.0000[0m
+2026-03-20 19:10:05 | WARNING | [93mGoogle Sheets not configured — set spreadsheet_id in config.py  (trades will still be saved to CSV)[0m
+2026-03-20 19:10:05 | INFO    | [97m✅ Telegram connected — alerts will be sent to your phone[0m
+2026-03-20 19:10:05 | INFO    | [97mBot initialised — balance: $1000.00[0m
+2026-03-20 19:10:05 | INFO    | [97m═══ Bot started  symbol=SOLUSDT  tf=5m ═══[0m
+2026-03-20 19:10:06 | DEBUG   | tick price=88.6700  pos=flat  bal=$1000.00
+2026-03-20 19:10:17 | DEBUG   | tick price=88.7300  pos=flat  bal=$1000.00
+2026-03-20 19:10:27 | DEBUG   | tick price=88.7300  pos=flat  bal=$1000.00
+2026-03-20 19:10:37 | DEBUG   | URL https://api.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:10:38 | DEBUG   | URL https://api.binance.com/api/v3/ticker/price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:10:39 | DEBUG   | tick price=88.7600  pos=flat  bal=$1000.00
+2026-03-20 19:10:49 | DEBUG   | tick price=88.7400  pos=flat  bal=$1000.00
+2026-03-20 19:11:00 | DEBUG   | tick price=88.7300  pos=flat  bal=$1000.00
+2026-03-20 19:11:10 | DEBUG   | tick price=88.6500  pos=flat  bal=$1000.00
+2026-03-20 19:11:21 | DEBUG   | tick price=88.6300  pos=flat  bal=$1000.00
+2026-03-20 19:11:32 | DEBUG   | tick price=88.6800  pos=flat  bal=$1000.00
+2026-03-20 19:11:42 | DEBUG   | tick price=88.7600  pos=flat  bal=$1000.00
+2026-03-20 19:11:53 | DEBUG   | tick price=88.8300  pos=flat  bal=$1000.00
+2026-03-20 19:12:04 | DEBUG   | tick price=88.8200  pos=flat  bal=$1000.00
+2026-03-20 19:12:14 | DEBUG   | URL https://api.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:12:14 | DEBUG   | URL https://api.binance.com/api/v3/ticker/price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:12:15 | DEBUG   | tick price=88.7800  pos=flat  bal=$1000.00
+2026-03-20 19:12:25 | DEBUG   | tick price=88.9000  pos=flat  bal=$1000.00
+2026-03-20 19:12:36 | DEBUG   | tick price=89.0100  pos=flat  bal=$1000.00
+2026-03-20 19:12:47 | DEBUG   | tick price=89.0400  pos=flat  bal=$1000.00
+2026-03-20 19:12:57 | DEBUG   | tick price=88.9200  pos=flat  bal=$1000.00
+2026-03-20 19:13:08 | DEBUG   | tick price=88.9700  pos=flat  bal=$1000.00
+2026-03-20 19:13:18 | DEBUG   | tick price=89.0100  pos=flat  bal=$1000.00
+2026-03-20 19:13:29 | DEBUG   | tick price=89.1100  pos=flat  bal=$1000.00
+2026-03-20 19:13:40 | DEBUG   | tick price=89.3000  pos=flat  bal=$1000.00
+2026-03-20 19:13:50 | DEBUG   | URL https://api.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:13:50 | DEBUG   | URL https://api.binance.com/api/v3/ticker/price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:13:51 | DEBUG   | tick price=89.1400  pos=flat  bal=$1000.00
+2026-03-20 19:14:01 | DEBUG   | URL https://api.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:14:01 | DEBUG   | URL https://api.binance.com/api/v3/ticker/price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:14:02 | DEBUG   | tick price=89.1300  pos=flat  bal=$1000.00
+2026-03-20 19:14:12 | DEBUG   | URL https://api.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:14:13 | DEBUG   | URL https://api.binance.com/api/v3/ticker/price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:14:13 | DEBUG   | tick price=89.1200  pos=flat  bal=$1000.00
+2026-03-20 19:14:24 | DEBUG   | tick price=89.1700  pos=flat  bal=$1000.00
+2026-03-20 19:14:34 | DEBUG   | tick price=89.1300  pos=flat  bal=$1000.00
+2026-03-20 19:14:45 | DEBUG   | tick price=89.1900  pos=flat  bal=$1000.00
+2026-03-20 19:14:55 | DEBUG   | tick price=89.2300  pos=flat  bal=$1000.00
+2026-03-20 19:15:07 | INFO    | [97m[92mENTRY_LONG        [0m  price=89.2600     qty=$1000.00   bal=$1000.00     [0m
+2026-03-20 19:15:07 | INFO    | [97m▶ Opened LONG @ 89.2600  size=$1000.00[0m
+2026-03-20 19:15:07 | DEBUG   | tick price=89.2600  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:15:18 | DEBUG   | tick price=89.2800  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:15:28 | DEBUG   | URL https://api.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:15:28 | DEBUG   | URL https://api1.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api1.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:15:28 | DEBUG   | URL https://api2.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api2.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:15:28 | DEBUG   | URL https://api.binance.com/api/v3/ticker/price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:15:28 | DEBUG   | URL https://api1.binance.com/api/v3/ticker/price failed: HTTPSConnectionPool(host='api1.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:15:28 | DEBUG   | URL https://api2.binance.com/api/v3/ticker/price failed: HTTPSConnectionPool(host='api2.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:15:29 | DEBUG   | tick price=89.2300  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:15:39 | DEBUG   | URL https://api.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:15:40 | DEBUG   | URL https://api.binance.com/api/v3/ticker/price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:15:40 | DEBUG   | tick price=89.2700  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:15:51 | DEBUG   | tick price=89.2500  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:16:01 | DEBUG   | tick price=89.2400  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:16:11 | DEBUG   | tick price=89.3000  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:16:22 | DEBUG   | tick price=89.1800  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:16:32 | DEBUG   | tick price=89.1500  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:16:43 | DEBUG   | tick price=89.0700  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:16:53 | DEBUG   | tick price=88.9400  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:17:04 | DEBUG   | tick price=89.0300  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:17:15 | DEBUG   | tick price=89.0900  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:17:25 | DEBUG   | tick price=89.0800  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:17:36 | DEBUG   | tick price=89.0800  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:17:47 | DEBUG   | tick price=89.1300  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:17:57 | DEBUG   | tick price=89.2600  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:18:08 | DEBUG   | tick price=89.2600  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:18:18 | DEBUG   | tick price=89.2900  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:18:29 | DEBUG   | tick price=89.2600  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:18:39 | DEBUG   | URL https://api.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:18:39 | DEBUG   | URL https://api1.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api1.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:18:39 | DEBUG   | URL https://api2.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api2.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:18:39 | DEBUG   | URL https://api3.binance.com/api/v3/klines failed: HTTPSConnectionPool(host='api3.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:18:39 | WARNING | [93mNetwork error: HTTPSConnectionPool(host='api3.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)'))) — retrying in 15 s[0m
+2026-03-20 19:18:55 | DEBUG   | tick price=89.3100  pos=LONG entry=89.2600  bal=$1000.00
+2026-03-20 19:19:04 | INFO    | [97mBot stopped by user. Total P&L: $0.0000[0m
+2026-03-20 19:29:04 | WARNING | [93mGoogle Sheets not configured — set spreadsheet_id in config.py  (trades will still be saved to CSV)[0m
+2026-03-20 19:29:04 | INFO    | [97m✅ Telegram connected — alerts will be sent to your phone[0m
+2026-03-20 19:29:04 | INFO    | [97mBot initialised — balance: $1000.00[0m
+2026-03-20 19:29:04 | INFO    | [97m═══ Bot started  symbol=SOLUSDT  tf=5m ═══[0m
+2026-03-20 19:29:04 | DEBUG   | Binance klines failed https://api.binance.com/api/v3/klines: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=SOLUSDT&interval=5m&limit=60 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:29:04 | DEBUG   | Klines from https://api1.binance.com/api/v3/klines
+2026-03-20 19:29:04 | DEBUG   | Binance price failed https://api.binance.com/api/v3/ticker/price: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=SOLUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-20 19:29:06 | INFO    | [97m[91mENTRY_SHORT       [0m  price=88.7900     qty=$1000.00   bal=$1000.00     [0m
+2026-03-20 19:29:06 | INFO    | [97m▶ Opened SHORT @ 88.7900  size=$1000.00[0m
+2026-03-20 19:29:06 | DEBUG   | tick price=88.7900  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:29:16 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:29:16 | DEBUG   | tick price=88.7500  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:29:27 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:29:27 | DEBUG   | tick price=88.7800  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:29:37 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:29:37 | DEBUG   | tick price=88.7900  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:29:48 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:29:48 | DEBUG   | tick price=88.8200  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:29:58 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:29:59 | DEBUG   | tick price=88.8300  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:30:09 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:30:09 | DEBUG   | tick price=88.7500  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:30:20 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:30:20 | DEBUG   | tick price=88.7500  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:30:30 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:30:31 | DEBUG   | tick price=88.7100  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:30:41 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:30:41 | DEBUG   | tick price=88.6900  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:30:52 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:30:52 | DEBUG   | tick price=88.7300  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:31:02 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:31:03 | DEBUG   | tick price=88.7600  pos=SHORT entry=88.7900  bal=$1000.00
+2026-03-20 19:31:13 | DEBUG   | Klines from https://api.binance.com/api/v3/klines
+2026-03-20 19:31:13 | DEBUG   | tick price=88.6400  pos=SHORT entry=88.7900  bal=$1000.00
