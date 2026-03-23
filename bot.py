@@ -1,20 +1,24 @@
 """
 =============================================================
-  SOL/USDT Paper Trading Bot  —  Binance/KuCoin  |  30m
+  BTC/USDT Paper Trading Bot  —  Binance/KuCoin  |  15m
 =============================================================
-  Exact logic from Pine Script:
+  Pine Script SAIYAN OCC logic — exact match:
 
   Signal : ALMA(close,2) crosses ALMA(open,2)
-           computed on 30m, resampled to 4h (30 * 8)
+           on 15m candles, resampled to 2h (15 * 8 = 120m)
 
-  BUY    : 4h ALMA close crosses ABOVE 4h ALMA open
-           → close any SHORT, open LONG at market price
+  BUY    : 2h ALMA close crosses ABOVE 2h ALMA open
+  SELL   : 2h ALMA close crosses BELOW 2h ALMA open
 
-  SELL   : 4h ALMA close crosses BELOW 4h ALMA open
-           → close any LONG, open SHORT at market price
+  Trade Management:
+    TP1 : +1.0%  → exit 50% of position
+    TP2 : +1.5%  → exit 30% of remaining
+    TP3 : +2.0%  → exit 20% of remaining
+    SL  : -0.5%  → exit 100%
 
-  NO SL, NO TP — position held until next signal flips it.
+  On new opposite signal → close all, open new position
 
+  Fixed $1000 per trade (use remaining if balance < $1000)
   Outputs : data/trades.csv + Telegram phone alerts
 =============================================================
 """
@@ -37,14 +41,12 @@ from telegram_client import TelegramClient
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# ─────────────────────────── logging ──────────────────────
 logger = setup_logger("bot", "logs/bot.log")
 
 
 # ─────────────────────────── ALMA ─────────────────────────
 def alma(series: pd.Series, length: int = 2,
          offset: float = 0.85, sigma: int = 5) -> pd.Series:
-    """Arnaud Legoux Moving Average — matches Pine Script ta.alma()."""
     m       = offset * (length - 1)
     s       = length / sigma
     weights = np.array([
@@ -66,8 +68,6 @@ def _get(url, params=None, timeout=10):
 
 def fetch_klines(symbol: str, interval: str,
                  limit: int = 500) -> pd.DataFrame:
-    """Fetch OHLCV candles — tries Binance then KuCoin."""
-    # Binance
     for url in ["https://api.binance.com/api/v3/klines",
                 "https://api1.binance.com/api/v3/klines",
                 "https://api2.binance.com/api/v3/klines"]:
@@ -87,8 +87,6 @@ def fetch_klines(symbol: str, interval: str,
             return df.iloc[:-1].reset_index(drop=True)
         except Exception as e:
             logger.debug("Binance failed %s: %s", url, e)
-
-    # KuCoin fallback
     try:
         kc_int    = interval.replace("m","min").replace("h","hour").replace("d","day")
         kc_symbol = symbol.replace("USDT", "-USDT")
@@ -108,12 +106,10 @@ def fetch_klines(symbol: str, interval: str,
         return df.iloc[:-1].reset_index(drop=True)
     except Exception as e:
         logger.debug("KuCoin failed: %s", e)
-
     raise RuntimeError("All kline sources failed")
 
 
 def fetch_price(symbol: str) -> float:
-    """Fetch current price — tries Binance then KuCoin."""
     for url in ["https://api.binance.com/api/v3/ticker/price",
                 "https://api1.binance.com/api/v3/ticker/price"]:
         try:
@@ -136,22 +132,20 @@ def fetch_price(symbol: str) -> float:
 # ─────────────────────────── Signal engine ────────────────
 def compute_signals(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Exact Pine Script logic:
-      1. ALMA(close, 2, 0.85, 5) and ALMA(open, 2, 0.85, 5) on 30m
-      2. Resample both to 4h (30m * intRes 8 = 240m)
-      3. BUY  = 4h ALMA close crosses ABOVE 4h ALMA open
-      4. SELL = 4h ALMA close crosses BELOW 4h ALMA open
+    Exact Pine Script SAIYAN OCC logic:
+      Base TF : 15m
+      HTF     : 15 * intRes(8) = 120m (2h)
+      ALMA(close,2,0.85,5) and ALMA(open,2,0.85,5) on 15m
+      Resampled to 2h → crossover = BUY, crossunder = SELL
     """
     cfg         = CONFIG["signal"]
-    htf_minutes = cfg["htf_minutes"]   # 240
+    htf_minutes = cfg["htf_minutes"]   # 120
 
-    # Step 1: ALMA on 30m
     df["alma_close"] = alma(df["close"], cfg["length"],
                             cfg["offset_alma"], cfg["sigma"])
     df["alma_open"]  = alma(df["open"],  cfg["length"],
                             cfg["offset_alma"], cfg["sigma"])
 
-    # Step 2: Resample to 4h
     df2       = df.set_index("open_time")
     rule      = f"{htf_minutes}min"
     htf_close = df2["alma_close"].resample(
@@ -159,11 +153,9 @@ def compute_signals(df: pd.DataFrame) -> pd.DataFrame:
     htf_open  = df2["alma_open"].resample(
         rule, closed="left", label="left").last().dropna()
 
-    # Step 3: Forward-fill back to 30m (matches Pine lookahead_on)
     df["htf_close"] = htf_close.reindex(df2.index, method="ffill").values
     df["htf_open"]  = htf_open.reindex(df2.index,  method="ffill").values
 
-    # Step 4: Crossover / crossunder
     df["cross_long"]  = (
         (df["htf_close"] >  df["htf_open"]) &
         (df["htf_close"].shift(1) <= df["htf_open"].shift(1))
@@ -177,23 +169,40 @@ def compute_signals(df: pd.DataFrame) -> pd.DataFrame:
 
 # ─────────────────────────── Position tracker ─────────────
 class Position:
-    """Tracks a single open paper trade — no SL/TP, held until flip."""
+    """
+    Tracks open paper trade with TP1/TP2/TP3 + SL.
+    Mirrors Pine Script risk management exactly.
+    """
 
     def __init__(self, side: str, entry_price: float, qty_usd: float):
-        self.side        = side          # "LONG" | "SHORT"
+        self.side        = side
         self.entry_price = entry_price
-        self.qty_usd     = qty_usd
+        self.initial_usd = qty_usd
+        self.remaining   = qty_usd    # shrinks at each TP hit
+        self.tp_hit      = 0          # 0=none, 1=tp1, 2=tp2, 3=tp3
         self.open_time   = datetime.now(timezone.utc)
 
-    def pnl(self, price: float) -> float:
-        if self.side == "LONG":
-            return self.qty_usd * (price - self.entry_price) / self.entry_price
+        cfg = CONFIG["risk"]
+        if side == "LONG":
+            self.tp1 = entry_price * (1 + cfg["tp1_pct"] / 100)
+            self.tp2 = entry_price * (1 + cfg["tp2_pct"] / 100)
+            self.tp3 = entry_price * (1 + cfg["tp3_pct"] / 100)
+            self.sl  = entry_price * (1 - cfg["sl_pct"]  / 100)
         else:
-            return self.qty_usd * (self.entry_price - price) / self.entry_price
+            self.tp1 = entry_price * (1 - cfg["tp1_pct"] / 100)
+            self.tp2 = entry_price * (1 - cfg["tp2_pct"] / 100)
+            self.tp3 = entry_price * (1 - cfg["tp3_pct"] / 100)
+            self.sl  = entry_price * (1 + cfg["sl_pct"]  / 100)
+
+    def calc_pnl(self, price: float, usd_qty: float) -> float:
+        if self.side == "LONG":
+            return usd_qty * (price - self.entry_price) / self.entry_price
+        else:
+            return usd_qty * (self.entry_price - price) / self.entry_price
 
     def __repr__(self):
-        return (f"<Position {self.side} entry={self.entry_price:.4f}"
-                f" qty=${self.qty_usd:.2f}>")
+        return (f"<Position {self.side} entry={self.entry_price:.2f} "
+                f"remaining=${self.remaining:.2f} tp_hit={self.tp_hit}>")
 
 
 # ─────────────────────────── Bot ──────────────────────────
@@ -204,7 +213,6 @@ class TradingBot:
         self.symbol     = cfg["symbol"]
         self.interval   = cfg["interval"]
         self.balance    = cfg["initial_balance"]
-        self.equity_pct = cfg["equity_pct"]
 
         self.position: Position | None = None
         self.trade_id  = 0
@@ -221,26 +229,25 @@ class TradingBot:
 
     # ── helpers ───────────────────────────────────────────
     def _trade_size(self) -> float:
-        # Always trade $1000 fixed — use whatever is available if balance < $1000
         fixed = CONFIG.get("fixed_trade_usd", 1000.0)
         return min(fixed, self.balance)
 
     def _now(self) -> str:
         return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
-    def _log(self, event: str, price: float,
+    def _log(self, event: str, side: str, price: float,
              qty: float, pnl: float = 0.0, notes: str = ""):
         row = {
             "trade_id" : self.trade_id,
             "timestamp": self._now(),
             "symbol"   : self.symbol,
             "event"    : event,
-            "side"     : self.position.side if self.position else "—",
-            "price"    : round(price, 4),
-            "usd_qty"  : round(qty,   4),
+            "side"     : side,
+            "price"    : round(price, 2),
+            "usd_qty"  : round(qty,   2),
             "pnl"      : round(pnl,   4),
-            "balance"  : round(self.balance, 4),
             "total_pnl": round(self.total_pnl, 4),
+            "balance"  : round(self.balance, 2),
             "notes"    : notes,
         }
         self.csv.write(row)
@@ -251,24 +258,73 @@ class TradingBot:
     # ── open position ─────────────────────────────────────
     def _open(self, side: str, price: float):
         self.trade_id += 1
-        size           = self._trade_size()
-        self.position  = Position(side, price, size)
-        self._log(f"ENTRY_{side}", price, size,
-                  notes=f"entry={price:.4f}")
-        logger.info("▶ Opened %s @ %.4f  size=$%.2f",
-                    side, price, size)
+        size          = self._trade_size()
+        self.position = Position(side, price, size)
+        p             = self.position
+        notes = (f"TP1={p.tp1:.2f}  TP2={p.tp2:.2f}  "
+                 f"TP3={p.tp3:.2f}  SL={p.sl:.2f}")
+        self._log(f"ENTRY_{side}", side, price, size, notes=notes)
+        logger.info("▶ Opened %s @ %.2f  size=$%.2f", side, price, size)
 
-    # ── close position ────────────────────────────────────
+    # ── partial exit ──────────────────────────────────────
+    def _partial_exit(self, label: str, price: float, pct: float):
+        p        = self.position
+        exit_usd = p.remaining * (pct / 100)
+        pnl      = p.calc_pnl(price, exit_usd)
+        self.balance   += pnl
+        self.total_pnl += pnl
+        p.remaining    -= exit_usd
+        self._log(label, p.side, price, exit_usd, pnl,
+                  notes=f"remaining=${p.remaining:.2f}")
+        logger.info("◑ %s @ %.2f  exit=$%.2f  P&L=$%.4f  bal=$%.2f",
+                    label, price, exit_usd, pnl, self.balance)
+
+    # ── full close ────────────────────────────────────────
     def _close(self, price: float, reason: str):
         p              = self.position
-        pnl            = p.pnl(price)
+        pnl            = p.calc_pnl(price, p.remaining)
         self.balance  += pnl
         self.total_pnl += pnl
-        self._log(reason, price, p.qty_usd, pnl,
-                  notes=f"entry={p.entry_price:.4f}  exit={price:.4f}")
-        logger.info("■ Closed %s @ %.4f  P&L=$%.4f  bal=$%.2f",
+        self._log(reason, p.side, price, p.remaining, pnl,
+                  notes=f"entry={p.entry_price:.2f}  exit={price:.2f}")
+        logger.info("■ Closed %s @ %.2f  P&L=$%.4f  bal=$%.2f",
                     p.side, price, pnl, self.balance)
         self.position = None
+
+    # ── check TP/SL on every price tick ──────────────────
+    def _check_exits(self, price: float):
+        p   = self.position
+        cfg = CONFIG["risk"]
+
+        if p.side == "LONG":
+            # SL
+            if price <= p.sl:
+                self._close(price, "SL_HIT")
+                return
+            # TP1
+            if p.tp_hit == 0 and price >= p.tp1:
+                self._partial_exit("TP1_HIT", price, cfg["tp1_qty"])
+                p.tp_hit = 1
+            # TP2
+            elif p.tp_hit == 1 and price >= p.tp2:
+                self._partial_exit("TP2_HIT", price, cfg["tp2_qty"])
+                p.tp_hit = 2
+            # TP3 — close remaining
+            elif p.tp_hit == 2 and price >= p.tp3:
+                self._close(price, "TP3_HIT")
+
+        else:  # SHORT
+            if price >= p.sl:
+                self._close(price, "SL_HIT")
+                return
+            if p.tp_hit == 0 and price <= p.tp1:
+                self._partial_exit("TP1_HIT", price, cfg["tp1_qty"])
+                p.tp_hit = 1
+            elif p.tp_hit == 1 and price <= p.tp2:
+                self._partial_exit("TP2_HIT", price, cfg["tp2_qty"])
+                p.tp_hit = 2
+            elif p.tp_hit == 2 and price <= p.tp3:
+                self._close(price, "TP3_HIT")
 
     # ── main loop ─────────────────────────────────────────
     def run(self):
@@ -279,7 +335,7 @@ class TradingBot:
 
         while True:
             try:
-                # 1. Fetch closed candles & compute signals
+                # 1. Fetch candles & compute signals
                 df = fetch_klines(self.symbol, self.interval, limit=500)
                 df = compute_signals(df)
 
@@ -291,29 +347,34 @@ class TradingBot:
                 # 2. Real-time price
                 price = fetch_price(self.symbol)
 
-                # 3. Act on new candle signal only
+                # 3. Check TP/SL on open position every tick
+                if self.position:
+                    self._check_exits(price)
+
+                # 4. New candle signal logic
                 if new_candle:
                     last_signal_ts = latest_ts
 
                     if long_signal:
-                        # Close SHORT if open, then open LONG
+                        # Close SHORT (any remaining) then open LONG
                         if self.position and self.position.side == "SHORT":
                             self._close(price, "CLOSE_SHORT")
                         if not self.position:
                             self._open("LONG", price)
 
                     elif short_signal:
-                        # Close LONG if open, then open SHORT
+                        # Close LONG (any remaining) then open SHORT
                         if self.position and self.position.side == "LONG":
                             self._close(price, "CLOSE_LONG")
                         if not self.position:
                             self._open("SHORT", price)
 
-                # 4. Heartbeat log
+                # 5. Heartbeat
                 pos_info = (f"{self.position.side} @ "
-                            f"{self.position.entry_price:.4f}"
+                            f"{self.position.entry_price:.2f} "
+                            f"tp={self.position.tp_hit}"
                             if self.position else "flat")
-                logger.debug("tick price=%.4f  pos=%s  bal=$%.2f",
+                logger.debug("tick price=%.2f  pos=%s  bal=$%.2f",
                              price, pos_info, self.balance)
 
                 time.sleep(CONFIG["poll_seconds"])
@@ -329,7 +390,6 @@ class TradingBot:
                 time.sleep(30)
 
 
-# ─────────────────────────── entry point ──────────────────
 if __name__ == "__main__":
     bot = TradingBot()
     bot.run()

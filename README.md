@@ -77,7 +77,7 @@ python bot.py
 The bot will print coloured output to the terminal:
 
 ```
-10:05:00 | INFO    | ═══ Bot started  symbol=SOLUSDT  tf=5m ═══
+10:05:00 | INFO    | ═══ Bot started  symbol=btcusdt  tf=15m ═══
 10:05:01 | INFO    | ▶ Opened LONG @ 142.3100  size=$100.00
 10:05:01 | INFO    | ENTRY_LONG        price=142.3100  qty=$100.00  bal=$900.00
 10:10:05 | INFO    | ◑ TP1_HIT         price=143.7400  qty=$50.00   bal=$950.50  P&L=+$0.50
@@ -114,7 +114,7 @@ All parameters are in **`config.py`**:
 |---|---|
 | `trade_id` | Sequential trade counter |
 | `timestamp` | UTC time of the event |
-| `symbol` | SOLUSDT |
+| `symbol` | BTCUSDT |
 | `event` | ENTRY_LONG / ENTRY_SHORT / TP1_HIT / TP2_HIT / TP3_HIT / SL_HIT / REVERSAL_CLOSE / FULL_EXIT |
 | `side` | LONG or SHORT |
 | `price` | Execution price |
