@@ -4875,3 +4875,21 @@ KeyError: 'htf_minutes'
 2026-03-24 00:16:30 | INFO    | [97m═══ Bot started  symbol=BTCUSDT  tf=15m ═══[0m
 2026-03-24 00:16:31 | DEBUG   | tick price=71073.21  pos=flat  bal=$1000.00
 2026-03-24 00:16:36 | INFO    | [97mBot stopped. Total P&L: $0.0000[0m
+2026-03-26 01:15:32 | WARNING | [93mGoogle Sheets not configured — set spreadsheet_id in config.py  (trades will still be saved to CSV)[0m
+2026-03-26 01:15:32 | INFO    | [97m✅ Telegram connected — alerts will be sent to your phone[0m
+2026-03-26 01:15:32 | INFO    | [97mBot initialised — balance: $1040.00[0m
+2026-03-26 01:15:32 | INFO    | [97m📁 Trade log → data/trades.csv[0m
+2026-03-26 01:15:32 | INFO    | [97m═══ Bot started  symbol=BTCUSDT  tf=15m ═══[0m
+2026-03-26 01:15:32 | DEBUG   | Binance failed https://api.binance.com/api/v3/klines: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=BTCUSDT&interval=15m&limit=500 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-26 01:15:33 | DEBUG   | Klines from Binance ✓
+2026-03-26 01:15:33 | DEBUG   | Binance price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=BTCUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-26 01:15:33 | DEBUG   | tick price=70928.63  pos=flat  bal=$1040.00
+2026-03-26 01:15:43 | DEBUG   | Binance failed https://api.binance.com/api/v3/klines: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=BTCUSDT&interval=15m&limit=500 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-26 01:15:44 | DEBUG   | Klines from Binance ✓
+2026-03-26 01:15:44 | DEBUG   | Binance price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=BTCUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-26 01:15:45 | DEBUG   | tick price=70914.29  pos=flat  bal=$1040.00
+2026-03-26 01:15:55 | DEBUG   | Binance failed https://api.binance.com/api/v3/klines: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/klines?symbol=BTCUSDT&interval=15m&limit=500 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-26 01:15:55 | DEBUG   | Klines from Binance ✓
+2026-03-26 01:15:56 | DEBUG   | Binance price failed: HTTPSConnectionPool(host='api.binance.com', port=443): Max retries exceeded with url: /api/v3/ticker/price?symbol=BTCUSDT (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1077)')))
+2026-03-26 01:15:56 | DEBUG   | tick price=70925.18  pos=flat  bal=$1040.00
+2026-03-26 01:15:59 | INFO    | [97mBot stopped. Total P&L: $0.0000[0m

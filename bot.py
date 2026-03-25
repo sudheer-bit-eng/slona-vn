@@ -66,8 +66,23 @@ def _get(url, params=None, timeout=10):
     return requests.get(url, params=params, timeout=timeout, verify=False)
 
 
+def _interval_to_bybit(interval: str) -> str:
+    """Convert Binance interval to Bybit format."""
+    mapping = {"1m":"1","3m":"3","5m":"5","15m":"15","30m":"30",
+               "1h":"60","2h":"120","4h":"240","1d":"D","1w":"W"}
+    return mapping.get(interval, "15")
+
+def _interval_to_okx(interval: str) -> str:
+    """Convert Binance interval to OKX format."""
+    mapping = {"1m":"1m","3m":"3m","5m":"5m","15m":"15m","30m":"30m",
+               "1h":"1H","2h":"2H","4h":"4H","1d":"1D"}
+    return mapping.get(interval, "15m")
+
 def fetch_klines(symbol: str, interval: str,
                  limit: int = 500) -> pd.DataFrame:
+    """Fetch OHLCV — tries Binance → KuCoin → Bybit → OKX."""
+
+    # ── Binance ───────────────────────────────────────────
     for url in ["https://api.binance.com/api/v3/klines",
                 "https://api1.binance.com/api/v3/klines",
                 "https://api2.binance.com/api/v3/klines"]:
@@ -84,9 +99,12 @@ def fetch_klines(symbol: str, interval: str,
                 df[col] = df[col].astype(float)
             df["open_time"]  = pd.to_datetime(df["open_time"],  unit="ms")
             df["close_time"] = pd.to_datetime(df["close_time"], unit="ms")
+            logger.debug("Klines from Binance ✓")
             return df.iloc[:-1].reset_index(drop=True)
         except Exception as e:
             logger.debug("Binance failed %s: %s", url, e)
+
+    # ── KuCoin ────────────────────────────────────────────
     try:
         kc_int    = interval.replace("m","min").replace("h","hour").replace("d","day")
         kc_symbol = symbol.replace("USDT", "-USDT")
@@ -106,10 +124,57 @@ def fetch_klines(symbol: str, interval: str,
         return df.iloc[:-1].reset_index(drop=True)
     except Exception as e:
         logger.debug("KuCoin failed: %s", e)
-    raise RuntimeError("All kline sources failed")
+
+    # ── Bybit ─────────────────────────────────────────────
+    try:
+        bb_interval = _interval_to_bybit(interval)
+        resp = _get("https://api.bybit.com/v5/market/kline",
+                    params=dict(category="spot", symbol=symbol,
+                                interval=bb_interval, limit=min(limit,200)))
+        resp.raise_for_status()
+        raw  = resp.json()["result"]["list"]
+        raw  = list(reversed(raw))
+        df   = pd.DataFrame(raw, columns=[
+            "open_time","open","high","low","close","volume","turnover"
+        ])
+        for col in ["open","high","low","close"]:
+            df[col] = df[col].astype(float)
+        df["open_time"]  = pd.to_datetime(df["open_time"].astype(int), unit="ms")
+        df["close_time"] = df["open_time"]
+        logger.debug("Klines from Bybit ✓")
+        return df.iloc[:-1].reset_index(drop=True)
+    except Exception as e:
+        logger.debug("Bybit failed: %s", e)
+
+    # ── OKX ───────────────────────────────────────────────
+    try:
+        okx_interval = _interval_to_okx(interval)
+        okx_symbol   = symbol.replace("USDT", "-USDT")
+        resp = _get("https://www.okx.com/api/v5/market/candles",
+                    params=dict(instId=okx_symbol, bar=okx_interval,
+                                limit=min(limit,300)))
+        resp.raise_for_status()
+        raw  = list(reversed(resp.json()["data"]))
+        df   = pd.DataFrame(raw, columns=[
+            "open_time","open","high","low","close",
+            "volume","volCcy","volCcyQuote","confirm"
+        ])
+        for col in ["open","high","low","close"]:
+            df[col] = df[col].astype(float)
+        df["open_time"]  = pd.to_datetime(df["open_time"].astype(int), unit="ms")
+        df["close_time"] = df["open_time"]
+        logger.debug("Klines from OKX ✓")
+        return df.iloc[:-1].reset_index(drop=True)
+    except Exception as e:
+        logger.debug("OKX failed: %s", e)
+
+    raise RuntimeError("All kline sources failed — Binance/KuCoin/Bybit/OKX all blocked")
 
 
 def fetch_price(symbol: str) -> float:
+    """Fetch price — tries Binance → KuCoin → Bybit → OKX."""
+
+    # Binance
     for url in ["https://api.binance.com/api/v3/ticker/price",
                 "https://api1.binance.com/api/v3/ticker/price"]:
         try:
@@ -118,6 +183,8 @@ def fetch_price(symbol: str) -> float:
             return float(r.json()["price"])
         except Exception as e:
             logger.debug("Binance price failed: %s", e)
+
+    # KuCoin
     try:
         kc_sym = symbol.replace("USDT", "-USDT")
         r = _get(f"https://api.kucoin.com/api/v1/market/orderbook/level1"
@@ -126,6 +193,26 @@ def fetch_price(symbol: str) -> float:
         return float(r.json()["data"]["price"])
     except Exception as e:
         logger.debug("KuCoin price failed: %s", e)
+
+    # Bybit
+    try:
+        r = _get("https://api.bybit.com/v5/market/tickers",
+                 params=dict(category="spot", symbol=symbol), timeout=5)
+        r.raise_for_status()
+        return float(r.json()["result"]["list"][0]["lastPrice"])
+    except Exception as e:
+        logger.debug("Bybit price failed: %s", e)
+
+    # OKX
+    try:
+        okx_sym = symbol.replace("USDT", "-USDT")
+        r = _get(f"https://www.okx.com/api/v5/market/ticker?instId={okx_sym}",
+                 timeout=5)
+        r.raise_for_status()
+        return float(r.json()["data"][0]["last"])
+    except Exception as e:
+        logger.debug("OKX price failed: %s", e)
+
     raise RuntimeError("All price sources failed")
 
 
