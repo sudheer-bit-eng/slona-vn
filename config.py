@@ -4,7 +4,7 @@ CONFIG = {
     # BTC/USDT — 15m timeframe
     "symbol"          : "BTCUSDT",
     "interval"        : "15m",
-    "initial_balance" : 1000.0,
+    "initial_balance" : 1040.0,
     "fixed_trade_usd" : 1000.0,
     "poll_seconds"    : 10,
 
@@ -24,7 +24,7 @@ CONFIG = {
         "tp3_pct" : 2.0,    # TP3 +2.0%
         "sl_pct"  : 0.5,    # SL  -0.5%
         "tp1_qty" : 80.0,   # exit 50% at TP1
-        "tp2_qty" : 20.0,   # exit 60% of remaining at TP2 (= 30% of original)
+        "tp2_qty" : 100.0,   # exit 60% of remaining at TP2 (= 30% of original)
         "tp3_qty" : 0.0,  # exit 100% of remaining at TP3 (= 20% of original)
     },
 
