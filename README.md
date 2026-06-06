@@ -1,7 +1,7 @@
-# SOL/USDT Paper Trading Bot
+# BTC/USDT Paper Trading Bot
 
-Converts the **SAIYAN OCC Pine Script strategy** into a fully
-automated Python paper trader.
+strategy into a fully
+automated Python trader.
 
 ---
 
@@ -10,8 +10,8 @@ automated Python paper trader.
 | Feature | Detail |
 |---|---|
 | Exchange | Binance (no API key needed — public data only) |
-| Symbol | SOL/USDT |
-| Timeframe | 5-minute candles |
+| Symbol | BTC/USDT |
+| Timeframe | 15-minute candles |
 | Signal | ALMA(close,2) crosses ALMA(open,2) |
 | Long entry | ALMA close **crosses above** ALMA open |
 | Short entry | ALMA close **crosses below** ALMA open |
@@ -125,8 +125,3 @@ All parameters are in **`config.py`**:
 
 ---
 
-## Disclaimer
-
-This is a **paper trading** / educational tool only.
-No real money is used. Past simulated performance does not
-guarantee future results. Always do your own research.
