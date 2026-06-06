@@ -2,7 +2,7 @@
 =============================================================
   BTC/USDT Paper Trading Bot  —  Binance/KuCoin  |  15m
 =============================================================
-  Pine Script SAIYAN OCC logic — exact match:
+  
 
   Signal : ALMA(close,2) crosses ALMA(open,2)
            on 15m candles, resampled to 2h (15 * 8 = 120m)
